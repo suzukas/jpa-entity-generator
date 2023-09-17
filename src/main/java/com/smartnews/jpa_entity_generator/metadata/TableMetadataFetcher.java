@@ -29,9 +29,10 @@ public class TableMetadataFetcher {
 
     public List<String> getTableNames(JDBCSettings jdbcSettings) throws SQLException {
         DatabaseMetaData databaseMeta = getMetadata(jdbcSettings);
+        String catalog = databaseMeta.getConnection().getCatalog();
         try {
             List<String> tableNames = new ArrayList<>();
-            try (ResultSet rs = databaseMeta.getTables(null,  jdbcSettings.getSchemaPattern(), "%", TABLE_TYPES)) {
+            try (ResultSet rs = databaseMeta.getTables(catalog,  jdbcSettings.getSchemaPattern(), "%", TABLE_TYPES)) {
                 while (rs.next()) {
                     tableNames.add(rs.getString("TABLE_NAME"));
                 }
@@ -51,8 +52,9 @@ public class TableMetadataFetcher {
         tableInfo.setName(table);
         tableInfo.setSchema(Optional.ofNullable(schema));
         DatabaseMetaData databaseMeta = getMetadata(jdbcSettings);
+        String catalog = databaseMeta.getConnection().getCatalog();
         try {
-            try (ResultSet rs = databaseMeta.getTables(null, schema, table, TABLE_TYPES)) {
+            try (ResultSet rs = databaseMeta.getTables(catalog, schema, table, TABLE_TYPES)) {
                 if (rs.next()) {
                     tableInfo.setDescription(Optional.ofNullable(rs.getString("REMARKS")));
                 }
@@ -61,12 +63,12 @@ public class TableMetadataFetcher {
             }
 
             final List<String> primaryKeyNames = new ArrayList<>();
-            try (ResultSet rs = databaseMeta.getPrimaryKeys(null, schema, table)) {
+            try (ResultSet rs = databaseMeta.getPrimaryKeys(catalog, schema, table)) {
                 while (rs.next()) {
                     primaryKeyNames.add(rs.getString("COLUMN_NAME"));
                 }
             }
-            try (ResultSet rs = databaseMeta.getColumns(null, schema, table, "%")) {
+            try (ResultSet rs = databaseMeta.getColumns(catalog, schema, table, "%")) {
                 while (rs.next()) {
                     Column column = new Column();
                     column.setName(rs.getString("COLUMN_NAME"));
