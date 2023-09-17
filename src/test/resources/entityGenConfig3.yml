@@ -2,7 +2,7 @@
 # *** JDBC configuration to fetch metadata ***
 
 jdbcSettings:
-  url: "jdbc:h2:file:./sample/db/blog;MODE=MySQL;TRACE_LEVEL_FILE=2;TRACE_LEVEL_SYSTEM_OUT=2"
+  url: "jdbc:h2:file:./sample/db/blog;MODE=MySQL;TRACE_LEVEL_FILE=2;TRACE_LEVEL_SYSTEM_OUT=2;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE"
   username: "user"
   password: ${DB_PASSWORD}
   driverClassName: "org.h2.Driver"

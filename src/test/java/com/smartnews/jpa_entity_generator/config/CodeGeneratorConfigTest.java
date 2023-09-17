@@ -2,14 +2,15 @@ package com.smartnews.jpa_entity_generator.config;
 
 import org.junit.Test;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.smartnews.jpa_entity_generator.config.CodeGeneratorConfig.*;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CodeGeneratorConfigTest {
 

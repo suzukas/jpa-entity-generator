@@ -35,7 +35,7 @@ public class BlogArticle implements Serializable {
   @Deprecated
   @Nullable
   @Column(name = "`tags`", nullable = true)
-  private Clob tags;
+  private String tags;
   @Nonnull
   @Column(name = "`created_at`", nullable = false)
   private Timestamp createdAt;

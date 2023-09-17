@@ -4,7 +4,17 @@ import com.smartnews.jpa_entity_generator.config.CodeGeneratorConfig;
 import com.smartnews.jpa_entity_generator.metadata.Column;
 import com.smartnews.jpa_entity_generator.metadata.Table;
 import com.smartnews.jpa_entity_generator.metadata.TableMetadataFetcher;
-import com.smartnews.jpa_entity_generator.rule.*;
+import com.smartnews.jpa_entity_generator.rule.AdditionalCodePosition;
+import com.smartnews.jpa_entity_generator.rule.Annotation;
+import com.smartnews.jpa_entity_generator.rule.AnnotationAttribute;
+import com.smartnews.jpa_entity_generator.rule.ClassAdditionalCommentRule;
+import com.smartnews.jpa_entity_generator.rule.ClassAnnotationRule;
+import com.smartnews.jpa_entity_generator.rule.FieldAdditionalCommentRule;
+import com.smartnews.jpa_entity_generator.rule.FieldDefaultValueRule;
+import com.smartnews.jpa_entity_generator.rule.FieldTypeRule;
+import com.smartnews.jpa_entity_generator.rule.ImportRule;
+import com.smartnews.jpa_entity_generator.rule.Interface;
+import com.smartnews.jpa_entity_generator.rule.TableScanRule;
 import com.smartnews.jpa_entity_generator.util.NameConverter;
 import com.smartnews.jpa_entity_generator.util.TypeConverter;
 import freemarker.template.TemplateException;
@@ -17,7 +27,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -261,7 +278,10 @@ public class CodeGenerator {
                 .map(ClassAdditionalCommentRule::getComment)
                 .flatMap(c -> Arrays.stream(c.split("\n")))
                 .collect(toList());
-        comment.addAll(additionalComments);
+        if (!additionalComments.isEmpty()) {
+            comment = new ArrayList<>(comment);
+            comment.addAll(additionalComments);
+        }
         if (comment.size() > 0) {
             return comment.stream().collect(joining("\n * ", "/**\n * ", "\n */"));
         } else {
@@ -278,7 +298,10 @@ public class CodeGenerator {
                 .map(FieldAdditionalCommentRule::getComment)
                 .flatMap(c -> Arrays.stream(c.split("\n")))
                 .collect(toList());
-        comment.addAll(additionalComments);
+        if (!additionalComments.isEmpty()) {
+            comment = new ArrayList<>(comment);
+            comment.addAll(additionalComments);
+        }
         if (comment.size() > 0) {
             return comment.stream().collect(joining("\n   * ", "  /**\n   * ", "\n   */"));
         } else {

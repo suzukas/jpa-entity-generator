@@ -14,7 +14,7 @@ apply plugin: 'java'
 
 buildscript {
   dependencies {
-    classpath 'com.h2database:h2:1.4.197'
+    classpath 'com.h2database:h2:2.2.222'
     classpath 'com.smartnews:jpa-entity-generator:0.99.8'
   }
 }
@@ -67,7 +67,7 @@ mvn jpa-entity-generator:generateAll
 
 ```yaml
 jdbcSettings:
-  url: "jdbc:h2:file:./db/blog;MODE=MySQL"
+  url: "jdbc:h2:file:./db/blog;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE"
   username: "user"
   password: "pass"
   driverClassName: "org.h2.Driver"

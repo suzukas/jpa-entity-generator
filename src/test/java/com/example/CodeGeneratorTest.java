@@ -56,7 +56,7 @@ public class CodeGeneratorTest {
     }
 
     @Test
-    public void _05_generateAll_TableScanMode_Is_RuleBaseduse_useJSR310() throws Exception {
+    public void _05_generateAll_TableScanMode_Is_Default_useJSR310() throws Exception {
         CodeGeneratorConfig config = CodeGeneratorConfig.load("entityGenConfig5.yml");
         config.setJpa1SupportRequired(true);
         config.setOutputDirectory("src/test/java");

@@ -6,7 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.h2database:h2:1.4.197'
+        classpath 'com.h2database:h2:2.2.222'
 
         // NOTE: when you need to go with a specific version in your local repo, use the following line instead
         // classpath 'com.smartnews:jpa-entity-generator:0.99.6-SNAPSHOT'
@@ -34,7 +34,7 @@ dependencies {
     providedCompile 'com.google.code.findbugs:jsr305:3.0.2'
 
 
-    testCompile 'com.h2database:h2:1.4.197'
+    testCompile 'com.h2database:h2:2.2.222'
     testCompile 'org.springframework.data:spring-data-jpa:2.0.6.RELEASE'
     testCompile 'org.springframework.boot:spring-boot-starter-data-jpa:2.0.1.RELEASE'
     testCompile 'org.springframework.boot:spring-boot-starter-test:2.0.1.RELEASE'

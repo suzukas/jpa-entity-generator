@@ -8,7 +8,9 @@ public class DatabaseUtil {
 
     public static void init() throws SQLException, ClassNotFoundException {
         Class.forName("org.h2.Driver");
-        try (Connection conn = DriverManager.getConnection("jdbc:h2:file:./sample/db/blog;MODE=MySQL;TRACE_LEVEL_FILE=2;TRACE_LEVEL_SYSTEM_OUT=2", "user", "pass")) {
+        try (Connection conn = DriverManager.getConnection(
+                "jdbc:h2:file:./sample/db/blog;MODE=MySQL;TRACE_LEVEL_FILE=2;TRACE_LEVEL_SYSTEM_OUT=2;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE",
+                "user", "pass")) {
             conn.prepareStatement("drop table blog if exists").execute();
             conn.prepareStatement("drop table article if exists").execute();
             conn.prepareStatement("drop table tag if exists").execute();
@@ -16,6 +18,7 @@ public class DatabaseUtil {
             conn.prepareStatement("drop table abtest if exists").execute();
             conn.prepareStatement("drop table something_tmp if exists").execute();
             conn.prepareStatement("drop table something_tmp2 if exists").execute();
+            conn.prepareStatement("drop table date_time_test if exists").execute();
             conn.prepareStatement("create table blog (" +
                     "id integer primary key auto_increment not null, " +
                     "name varchar(30), " +
@@ -53,6 +56,14 @@ public class DatabaseUtil {
                     "identifier varchar(50) primary key not null, " +
                     "expiration_timestamp integer not null, " +
                     "config text" +
+                    ")").execute();
+            conn.prepareStatement("create table date_time_test (" +
+                    "id integer primary key auto_increment not null, " +
+                    "test_date date not null, " +
+                    "test_time_tz time WITH TIME ZONE not null, " +
+                    "test_time time not null, " +
+                    "test_datetime_tz timestamp WITH TIME ZONE not null, " +
+                    "test_datetime datetime not null" +
                     ")").execute();
         }
 

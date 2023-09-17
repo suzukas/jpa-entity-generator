@@ -29,9 +29,14 @@ public class TableMetadataFetcher {
 
     public List<String> getTableNames(JDBCSettings jdbcSettings) throws SQLException {
         DatabaseMetaData databaseMeta = getMetadata(jdbcSettings);
+        String catalog = databaseMeta.getConnection().getCatalog();
+        String schema = jdbcSettings.getSchemaPattern();
+        if (schema == null) {
+            schema = databaseMeta.getConnection().getSchema();
+        }
         try {
             List<String> tableNames = new ArrayList<>();
-            try (ResultSet rs = databaseMeta.getTables(null,  jdbcSettings.getSchemaPattern(), "%", TABLE_TYPES)) {
+            try (ResultSet rs = databaseMeta.getTables(catalog, schema, "%", TABLE_TYPES)) {
                 while (rs.next()) {
                     tableNames.add(rs.getString("TABLE_NAME"));
                 }
@@ -46,13 +51,17 @@ public class TableMetadataFetcher {
 
         Table tableInfo = new Table();
 
+        DatabaseMetaData databaseMeta = getMetadata(jdbcSettings);
+        String catalog = databaseMeta.getConnection().getCatalog();
         String schema = extractSchema(schemaAndTable);
+        if (schema == null) {
+            schema = databaseMeta.getConnection().getSchema();
+        }
         String table = extractTabeName(schemaAndTable);
         tableInfo.setName(table);
         tableInfo.setSchema(Optional.ofNullable(schema));
-        DatabaseMetaData databaseMeta = getMetadata(jdbcSettings);
         try {
-            try (ResultSet rs = databaseMeta.getTables(null, schema, table, TABLE_TYPES)) {
+            try (ResultSet rs = databaseMeta.getTables(catalog, schema, table, TABLE_TYPES)) {
                 if (rs.next()) {
                     tableInfo.setDescription(Optional.ofNullable(rs.getString("REMARKS")));
                 }
@@ -61,12 +70,12 @@ public class TableMetadataFetcher {
             }
 
             final List<String> primaryKeyNames = new ArrayList<>();
-            try (ResultSet rs = databaseMeta.getPrimaryKeys(null, schema, table)) {
+            try (ResultSet rs = databaseMeta.getPrimaryKeys(catalog, schema, table)) {
                 while (rs.next()) {
                     primaryKeyNames.add(rs.getString("COLUMN_NAME"));
                 }
             }
-            try (ResultSet rs = databaseMeta.getColumns(null, schema, table, "%")) {
+            try (ResultSet rs = databaseMeta.getColumns(catalog, schema, table, "%")) {
                 while (rs.next()) {
                     Column column = new Column();
                     column.setName(rs.getString("COLUMN_NAME"));
@@ -126,7 +135,7 @@ public class TableMetadataFetcher {
 
     private static String extractSchema(String schemaAndTable) {
         if (schemaAndTable.contains(".")) {
-            return schemaAndTable.split(".")[0];
+            return schemaAndTable.split("\\.")[0];
         } else {
             return null;
         }
@@ -134,7 +143,7 @@ public class TableMetadataFetcher {
 
     private static String extractTabeName(String schemaAndTable) {
         if (schemaAndTable.contains(".")) {
-            return schemaAndTable.split(".")[1];
+            return schemaAndTable.split("\\.")[1];
         } else {
             return schemaAndTable;
         }
