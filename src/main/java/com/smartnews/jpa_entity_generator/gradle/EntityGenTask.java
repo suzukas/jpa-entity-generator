@@ -7,6 +7,8 @@ import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 
 /**
@@ -21,6 +23,16 @@ public class EntityGenTask extends DefaultTask {
             ext = new EntityGenExtension();
         }
         CodeGeneratorConfig config = CodeGeneratorConfig.load(ext.getConfigPath());
+
+        // If the output directory is a relative directory,
+        // convert it to an absolute path from the project directory.
+        // Because, the current directory at task execution is not the project directory.
+        Path outputDir = Paths.get(config.getOutputDirectory());
+        if (!outputDir.isAbsolute()) {
+            Path absPath = getProject().getProjectDir().toPath().resolve(outputDir).toAbsolutePath();
+            config.setOutputDirectory(absPath.toString());
+        }
+
         if (config.isJpa1SupportRequired()) {
             if (config.getPackageName().equals(config.getPackageNameForJpa1())) {
                 throw new IllegalStateException("packageName and packageNameForJpa1 must be different.");
