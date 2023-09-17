@@ -63,6 +63,11 @@ public class CodeGeneratorConfig implements Serializable {
             ImportRule.createGlobal("jakarta.annotation.Nonnull"),
             ImportRule.createGlobal("jakarta.annotation.Nullable")
     );
+
+    private static final List<ImportRule> JSR_310_PRESET_IMPORTS = Arrays.asList(
+            ImportRule.createGlobal("java.time.*")
+    );
+
     // ----------
 
     public CodeGeneratorConfig() {
@@ -131,6 +136,9 @@ public class CodeGeneratorConfig implements Serializable {
                 getImportRules().addAll(JSR_305_PRESET_IMPORTS);
             }
         }
+        if (useJSR310) {
+            getImportRules().addAll(JSR_310_PRESET_IMPORTS);
+        }
     }
 
     private JDBCSettings jdbcSettings;
@@ -154,6 +162,8 @@ public class CodeGeneratorConfig implements Serializable {
     // Can be removed after no javax support and replace jsr305AnnotationsRequired to jakartaAnnotationRequired
     private boolean useJakarta;
     private boolean usePrimitiveForNonNullField;
+    // support JSR-310 Date and Time API
+    private boolean useJSR310;
 
     // NOTE: Explicitly having NoArgsConstructor/AllArgsConstructor is necessary as as a workaround to enable using @Builder
     // see also: https://github.com/rzwitserloot/lombok/issues/816

@@ -1,16 +1,19 @@
 package com.smartnews.jpa_entity_generator.util;
 
+import com.smartnews.jpa_entity_generator.config.CodeGeneratorConfig;
+import lombok.AllArgsConstructor;
+
 import java.sql.Types;
 
 /**
  * Utility to convert SQL types to Java types.
  */
+@AllArgsConstructor
 public class TypeConverter {
 
-    private TypeConverter() {
-    }
+    private final CodeGeneratorConfig config;
 
-    public static String toJavaType(int typeCode) {
+    public String toJavaType(int typeCode) {
         switch (typeCode) {
             case Types.ARRAY:
                 return "Array";
@@ -30,7 +33,7 @@ public class TypeConverter {
                 return "Clob";
             // case Types.DATALINK:
             case Types.DATE:
-                return "Date";
+                return config.isUseJSR310() ? "LocalDate" : "Date";
             case Types.DECIMAL:
                 return "java.math.BigDecimal";
             // case Types.DISTINCT:
@@ -64,13 +67,13 @@ public class TypeConverter {
             case Types.STRUCT:
                 return "Struct";
             case Types.TIME:
-                return "Time";
+                return config.isUseJSR310() ? "LocalTime" : "Time";
             case Types.TIME_WITH_TIMEZONE:
-                return "Time";
+                return config.isUseJSR310() ? "OffsetTime" : "Time";
             case Types.TIMESTAMP:
-                return "Timestamp";
+                return config.isUseJSR310() ? "LocalDateTime" : "Timestamp";
             case Types.TIMESTAMP_WITH_TIMEZONE:
-                return "Timestamp";
+                return config.isUseJSR310() ? "OffsetDateTime" : "Timestamp";
             case Types.TINYINT:
                 return "Byte";
             // case Types.VARBINARY:
@@ -81,7 +84,7 @@ public class TypeConverter {
         }
     }
 
-    public static String toPrimitiveTypeIfPossible(String type) {
+    public String toPrimitiveTypeIfPossible(String type) {
         switch (type) {
             case "Byte":
                 return "byte";

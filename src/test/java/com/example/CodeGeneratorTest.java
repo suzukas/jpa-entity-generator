@@ -55,4 +55,13 @@ public class CodeGeneratorTest {
         CodeGenerator.generateAll(config, false);
     }
 
+    @Test
+    public void _05_generateAll_TableScanMode_Is_RuleBaseduse_useJSR310() throws Exception {
+        CodeGeneratorConfig config = CodeGeneratorConfig.load("entityGenConfig5.yml");
+        config.setJpa1SupportRequired(true);
+        config.setOutputDirectory("src/test/java");
+        CodeGenerator.generateAll(config, true);
+        CodeGenerator.generateAll(config, false);
+    }
+
 }

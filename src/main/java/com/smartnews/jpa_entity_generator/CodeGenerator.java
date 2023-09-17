@@ -59,6 +59,7 @@ public class CodeGenerator {
                 (isJpa1 ? originalConfig.getPackageNameForJpa1().replaceAll("\\.", "/") : originalConfig.getPackageName().replaceAll("\\.", "/")));
         Files.createDirectories(dir);
 
+        TypeConverter typeConverter = new TypeConverter(originalConfig);
         TableMetadataFetcher metadataFetcher = new TableMetadataFetcher();
         List<String> allTableNames = metadataFetcher.getTableNames(originalConfig.getJdbcSettings());
         List<String> tableNames = filterTableNames(originalConfig, allTableNames);
@@ -126,9 +127,9 @@ public class CodeGenerator {
                     f.setType(fieldTypeRule.get().getTypeName());
                     f.setPrimitive(isPrimitive(f.getType()));
                 } else {
-                    f.setType(TypeConverter.toJavaType(c.getTypeCode()));
+                    f.setType(typeConverter.toJavaType(c.getTypeCode()));
                     if (!c.isNullable() && config.isUsePrimitiveForNonNullField()) {
-                        f.setType(TypeConverter.toPrimitiveTypeIfPossible(f.getType()));
+                        f.setType(typeConverter.toPrimitiveTypeIfPossible(f.getType()));
                     }
                     f.setPrimitive(isPrimitive(f.getType()));
                 }
